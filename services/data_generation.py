@@ -64,7 +64,6 @@ stations_list = [
         'аэропорт внуково', 'яхромская', 'лианозово', 'физтех'
 ]
 
-
 import datetime
 from natasha import DatesExtractor
 from natasha.markup import show_json
@@ -109,7 +108,7 @@ def get_station(text: str) -> str:
         if dst < mn:
             current_station = station
             mn = dst
-    return current_station if mn < 5 else ""
+    return current_station if mn < 3 else ""
 
 def data_generation(text: str) -> dict:
     date = get_date(text)

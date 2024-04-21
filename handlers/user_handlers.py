@@ -7,8 +7,10 @@ from lexicon.lexicon_RU import ANSWERS_LEXICON
 from aiogram import F
 from services.recognition_services import voice_to_text
 from services.data_generation import data_generation
+from services.server import post_ans
 from wordToNum.extractor import NumberExtractor
-import requests
+from services.neural import get_neural_answer
+from datetime import datetime
 
 main_router: Router = Router()
 
@@ -36,15 +38,25 @@ async def process_recognition_command(message: Message, bot: Bot):
     voice_to_text('files/voices/voice.mp3', 'files/voices/text.txt')
     text = ''.join(open('files/voices/text.txt', 'r').readlines())
     extractor = NumberExtractor()
-    print(text)
     extext = extractor.replace_groups(text)
     data = data_generation(extext)
+    print(text)
     os.remove('files/voices/text.txt')
-    requests.post('http://127.0.0.1:8000/', data)
-    if data['station'] == '':
-        await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
+    await message.answer("Нейросеть обрабатывает запрос...")
+    date = datetime(year=data['year'], month=data['month'], day=data['day'])
+    #answer = 0.0
+    #if date <= datetime.now().date:
+    #    answer = 
+    #post_ans(data)
+    #neural_ans = get_neural_answer(data)
+    if date.year < 2024:
+        if data['station'] == '':
+            await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
+        else:
+            await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
+    Станция: {data['station']}""" + '\n\n' + 'Текст: ' + text)
     else:
-        await message.answer(str(data) + '\n' + 'You said: ' + text)
+        await message.answer('Нет данных.')
 
 @main_router.message()
 async def process_message_command(message: Message):
@@ -52,13 +64,9 @@ async def process_message_command(message: Message):
     extractor = NumberExtractor()
     text = extractor.replace_groups(text)
     data = data_generation(text)
+    await message.answer("Нейросеть обрабатывает запрос...")
     if data['station'] == '':
         await message.reply('Пожалуйста, повторите запрос!')
     else:
         await message.reply(str(data))
-
-
-
-
-
 
