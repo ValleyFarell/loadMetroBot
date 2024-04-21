@@ -1,7 +1,5 @@
 import pandas as pd 
 
-def get_loaded(station, date) -> int:
-    data = pd.read_csv('database/data_clened.csv')
-    data = data.set_index('station')
-    
-
+data = pd.read_csv('database/data_clened.csv', index_col='station')
+def get_loaded(station, date):
+    return data.at[station, date]

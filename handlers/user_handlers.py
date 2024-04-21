@@ -10,6 +10,7 @@ from services.data_generation import data_generation
 from services.server import post_ans
 from wordToNum.extractor import NumberExtractor
 from services.neural import get_neural_answer
+from services.get_from_db import get_loaded
 from datetime import datetime
 
 main_router: Router = Router()
@@ -44,17 +45,20 @@ async def process_recognition_command(message: Message, bot: Bot):
     os.remove('files/voices/text.txt')
     await message.answer("Нейросеть обрабатывает запрос...")
     date = datetime(year=data['year'], month=data['month'], day=data['day'])
-    #answer = 0.0
-    #if date <= datetime.now().date:
-    #    answer = 
-    #post_ans(data)
-    #neural_ans = get_neural_answer(data)
-    if data['station'] == '':
-        await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
+    answer = 0.0
+    if date.year >= 2024:
+        if date <= datetime.now():
+            answer = get_loaded(data['station'], str(data['month']) + '/' + \
+                                str(data['day']) + '/' + str(data['year']))
+        #post_ans(data)
+        #neural_ans = get_neural_answer(data)
+        if data['station'] == '':
+            await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
+        else:
+            await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
+Станция: {data['station']}\n""" + f'Загруженность: {answer}' +'\n\n' + 'Текст: ' + text)
     else:
-        await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
-Станция: {data['station']}""" + '\n\n' + 'Текст: ' + text)
-
+        await message.answer('Некорректные данные!')
 @main_router.message()
 async def process_message_command(message: Message):
     text = message.text
@@ -62,9 +66,19 @@ async def process_message_command(message: Message):
     text = extractor.replace_groups(text)
     data = data_generation(text)
     await message.answer("Нейросеть обрабатывает запрос...")
-    if data['station'] == '':
-        await message.reply('Пожалуйста, повторите запрос!')
+    date = datetime(year=data['year'], month=data['month'], day=data['day'])
+    answer = 0.0
+    if date.year >= 2024:
+        if date <= datetime.now():
+            answer = get_loaded(data['station'], str(data['month']) + '/' + \
+                                str(data['day']) + '/' + str(data['year']))
+        #post_ans(data)
+        #neural_ans = get_neural_answer(data)
+        if data['station'] == '':
+            await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
+        else:
+            await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
+Станция: {data['station']}\n""" + f'Загруженность: {answer}' +'\n\n' + 'Текст: ' + text)
     else:
-        await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
-Станция: {data['station']}""" + '\n\n' + 'Текст: ' + text)
+        await message.answer('Некорректные данные!')
 
