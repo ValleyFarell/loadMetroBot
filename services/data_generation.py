@@ -99,8 +99,6 @@ def min_slice_check(text: str, station: str, slice_value: int) -> int:
         return mn
 
 def get_station(text: str) -> str:
-    
-
     mn = min_slice_check(text, stations_list[0], len(stations_list[0]))
     current_station = stations_list[0]
     for station in stations_list:

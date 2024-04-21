@@ -45,13 +45,13 @@ async def process_recognition_command(message: Message, bot: Bot):
     os.remove('files/voices/text.txt')
     await message.answer("Нейросеть обрабатывает запрос...")
     date = datetime(year=data['year'], month=data['month'], day=data['day'])
-    answer = 0.0
+    answer = 0
     if date.year >= 2024:
         if date <= datetime.now():
             answer = get_loaded(data['station'], str(data['month']) + '/' + \
                                 str(data['day']) + '/' + str(data['year']))
-        #post_ans(data)
-        #neural_ans = get_neural_answer(data)
+        else:
+            answer = post_ans(data)
         if data['station'] == '':
             await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
         else:

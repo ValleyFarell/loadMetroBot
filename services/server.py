@@ -17,4 +17,5 @@ def post_ans(data: dict):
     data_detailed["time"] = time_text
     response_detailed = requests.post(f"{base_url}/stations/detailed", json=data_detailed)
     print("Response from /stations/detailed:")
-    print(json.dumps(response_detailed.json(), indent=4,ensure_ascii=False))
+    return json.dumps(response_detailed.json(), indent=4,ensure_ascii=False)
+
