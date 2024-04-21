@@ -49,14 +49,11 @@ async def process_recognition_command(message: Message, bot: Bot):
     #    answer = 
     #post_ans(data)
     #neural_ans = get_neural_answer(data)
-    if date.year < 2024:
-        if data['station'] == '':
-            await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
-        else:
-            await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
-    Станция: {data['station']}""" + '\n\n' + 'Текст: ' + text)
+    if data['station'] == '':
+        await message.answer('Пожалуйста, повторите запрос!' + '\n' + 'You said: ' + text)
     else:
-        await message.answer('Нет данных.')
+        await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
+Станция: {data['station']}""" + '\n\n' + 'Текст: ' + text)
 
 @main_router.message()
 async def process_message_command(message: Message):
