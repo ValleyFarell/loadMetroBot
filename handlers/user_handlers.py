@@ -65,5 +65,6 @@ async def process_message_command(message: Message):
     if data['station'] == '':
         await message.reply('Пожалуйста, повторите запрос!')
     else:
-        await message.reply(str(data))
+        await message.answer(f"""Дата: {data['year']}-{data['month'] // 10}{data['month'] % 10}-{data['day'] // 10}{data['day'] % 10}
+Станция: {data['station']}""" + '\n\n' + 'Текст: ' + text)
 
